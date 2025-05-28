@@ -1,18 +1,21 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from ...account.validation import validate_signup_data, validate_task_data, validate_completion_report_data
+from ..account.validation import validate_signup_data, validate_task_data, validate_completion_report_data
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
+from django.http import Http404
 from django.urls import reverse_lazy
-from ...account.mixins import SuperAdminPermissionmixin,AdminPermissionmixin
+from ..account.mixins import SuperAdminPermissionmixin,AdminPermissionmixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
-from ...account.models import User
+from django.contrib.auth import get_user_model
 from django.contrib import messages
-from ...tasks.models import Task, DeletedTask, TaskCompletionReport
+from ..account.models import User
+from ..tasks.models import Task, DeletedTask, TaskCompletionReport
 from django.views.generic import ListView, DeleteView, CreateView, UpdateView, TemplateView
 
 
 # Create your views here.
+Users = get_user_model()
 
 class UsercreateView(AdminPermissionmixin, View):
     template_name = 'signup.html'
@@ -58,25 +61,28 @@ class UserListView(AdminPermissionmixin, ListView):
     
 
 class UserDeleteView(SuperAdminPermissionmixin, DeleteView):
-    def get(self, request, *args, **kwargs):
-        user_id = kwargs.get('pk')
-        user = get_object_or_404(User, id=user_id)
+    model = Users
+    success_url = reverse_lazy('user-list')
 
-        if user.user_type == 'user':
-            user.delete()
-        return redirect('user-list')
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.user_type != 'user':
+            raise Http404("Only regular users can be deleted.")
+        return obj
+    
     
 class CreateAdminView(SuperAdminPermissionmixin, View):
     def get(self, request, *args, **kwargs):
 
         user_id = kwargs.get('pk')
-        user = get_object_or_404(User, id=user_id)
+        user = get_object_or_404(Users, id=user_id)
 
         if user.user_type == 'user':
             user.is_staff = True
             user.user_type = 'admin'
             user.save()
             return redirect('user-list')
+        
 
 
 class DeleteAdminView(SuperAdminPermissionmixin, View):
@@ -84,7 +90,7 @@ class DeleteAdminView(SuperAdminPermissionmixin, View):
     def get(self, request, *args, **kwargs):
         
         user_id = kwargs.get('pk')
-        user = get_object_or_404(User, id=user_id)
+        user = get_object_or_404(Users, id=user_id)
 
         if user.user_type == 'admin':
             user.delete()
@@ -94,19 +100,18 @@ class DeleteAdminView(SuperAdminPermissionmixin, View):
 
 class RemoveAdminView(SuperAdminPermissionmixin, View):
     
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         user_id = kwargs.get('pk')
         user = get_object_or_404(User, id=user_id)
+        print(user)
 
         if user.user_type == 'admin':
+            print(user.user_type, "sss")
             user.is_staff = False
             user.user_type = 'user'
             user.save()
-            messages.success(request, f"Admin privileges removed from user {user.username}.")
-        else:
-            messages.error(request, "Selected user is not an admin.")
-
-        return redirect('user-list')
+            return redirect('user-list')
+        return render(request, 'fallback_template.html')
     
 
 @method_decorator(never_cache, name='dispatch')
@@ -116,8 +121,8 @@ class TaskCreateView(View):
     def get(self, request, *args, **kwargs):
         user_queryset = User.objects.all()
         context = {
-            'admins': user_queryset.filter(user_type='admin'),
-            'users': user_queryset.filter(user_type='user'),
+            'admins': User.objects.filter(user_type='admin'),
+            'users': User.objects.filter(user_type='user'),
         }
         return render(request, self.template_name, context)
     
@@ -270,15 +275,19 @@ class TaskDeleteView(AdminPermissionmixin,View):
         return redirect('task-list')
     
 
-class TaskProgressView(LoginRequiredMixin,View):
-    
-    def get(self,request,*args,**kwargs):
+class TaskProgressView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
         id = kwargs.get('pk')
-        task = get_object_or_404(Task,id=id)
+        task = get_object_or_404(Task, id=id)
+
         if task.status == 'pending':
             task.status = 'in_progress'
             task.save()
-            return redirect('task-list')
+            messages.success(request, f"Task '{task.title}' status changed to In Progress.")
+        else:
+            messages.warning(request, "Task status cannot be updated.")
+
+        return redirect('task-list')
         
 
 
@@ -296,7 +305,7 @@ class TaskCompletionFormView(LoginRequiredMixin, View):
         task = get_object_or_404(Task, id=task_id)
 
         data = {
-            'report': request.POST.get('report')
+            'completion_report': request.POST.get('completion_report')
         }
 
         errors = validate_completion_report_data(data)
@@ -307,12 +316,11 @@ class TaskCompletionFormView(LoginRequiredMixin, View):
         TaskCompletionReport.objects.create(
             user=request.user,
             task=task,
-            report=data['report']
+            completion_report=data['completion_report']
         )
 
         task.status = 'completed'
         task.save()
-
         return redirect('task-list')
 
 

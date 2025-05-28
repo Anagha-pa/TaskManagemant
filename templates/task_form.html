@@ -61,12 +61,15 @@
             <textarea name="description" placeholder="Task Description">{{ input.description }}</textarea>
 
             <label for="admin">Assign Admin:</label>
-            <select name="admin">
+            <select name="admin" class="form-control">
                 <option value="">-- Select Admin --</option>
                 {% for admin in admins %}
-                    <option value="{{ admin.id }}" {% if input.admin == admin.id|stringformat:"s" %}selected{% endif %}>{{ admin.username }}</option>
+                    <option value="{{ admin.id }}" {% if input.admin|stringformat:"s" == admin.id|stringformat:"s" %}selected{% endif %}>
+                        {{ admin.username }}
+                    </option>
                 {% endfor %}
             </select>
+
 
             <label for="assigned_to">Assign To:</label>
             <select name="assigned_to">

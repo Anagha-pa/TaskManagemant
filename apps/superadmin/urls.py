@@ -20,7 +20,7 @@ urlpatterns = [
     path('taskupdate/<int:pk>/',TaskUpdateView.as_view(), name='task-update'),
     path('taskdelete/<int:pk>/',TaskDeleteView.as_view(), name='task-delete'),
     path('taskprogress/<int:pk>/',TaskProgressView.as_view(), name='task-progress'),
-    path('taskcomplete/<int:pk>/',TaskCompletionFormView.as_view(), name='task-complete-form'),
-    path('taskcompleted/<int:pk>/',TaskCompletionReportListView.as_view(), name='task-completed-report'),
+    path('taskcompleteform/<int:pk>/',TaskCompletionFormView.as_view(), name='task-complete-form'),
+    path('taskcompletedRepo/<int:pk>/',TaskCompletionReportListView.as_view(), name='task-completed-report'),
     
 ]

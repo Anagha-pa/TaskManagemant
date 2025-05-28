@@ -26,9 +26,9 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    path("", include('apps.account.api.urls')),
+    path("", include('apps.account.urls')),
     path("tasks/", include('apps.tasks.api.urls')),
-    path("superadmin/", include('apps.superadmin.api.urls'))
+    path("superadmin/", include('apps.superadmin.urls'))
 
 ]
 

@@ -2,13 +2,13 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model, authenticate, login, logout
-from ..validation import  validate_login_data
+from .validation import  validate_login_data
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views import View
 from django.contrib import messages
-from ..models import User
-from ..mixins import *
+from .models import User
+from .mixins import *
 
 # Create your views here.
 # User = get_user_model

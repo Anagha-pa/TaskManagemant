@@ -1,37 +1,43 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Deleted Tasks</title>
-    <style>
-        body { font-family: sans-serif; background: #fff; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 10px; border-bottom: 1px solid #ccc; }
-        th { background: #6c757d; color: white; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Deleted Tasks</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
 </head>
-<body>
-    <h1>Deleted Tasks</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Original ID</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Assigned To</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for task in deleted_tasks %}
-            <tr>
-                <td>{{ task.org_id }}</td>
-                <td>{{ task.title }}</td>
-                <td>{{ task.description }}</td>
-                <td>{{ task.assigned_to.username }}</td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="4">No deleted tasks found.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white font-sans">
+
+  <!-- Page Heading -->
+  <div class="w-[90%] md:w-[70%] mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg mt-10">
+    <div class="bg-gray-800 text-white px-6 py-4 rounded-t-lg">
+      <h1 class="text-xl font-bold text-center">Deleted Tasks</h1>
+    </div>
+  </div>
+
+  <!-- Task Loop -->
+  {% if deleted_tasks %}
+    {% for task in deleted_tasks %}
+      <div class="w-[90%] md:w-[70%] mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden mt-6 p-6 space-y-3">
+
+        <h2 class="text-xl font-bold text-red-600">Title: {{ task.title }}</h2>
+        <p class="text-sm font-medium uppercase">Assigned To: <span class="font-semibold">{{ task.assigned_to }}</span></p>
+        <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Deleted At: <span class="font-semibold">{{ task.deleted_at }}</span></p>
+        
+        <div class="text-sm text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 p-4 rounded">
+          {{ task.description }}
+        </div>
+
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="w-[90%] md:w-[70%] mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md mt-6 p-6 text-center text-red-600 font-semibold">
+      No deleted tasks found.
+    </div>
+  {% endif %}
+
 </body>
 </html>

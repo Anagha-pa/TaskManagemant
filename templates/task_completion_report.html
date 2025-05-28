@@ -1,20 +1,68 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Completion Report</title>
-    <style>
-        body { font-family: sans-serif; background: #f0f0f0; padding: 20px; }
-        .container { background: white; padding: 20px; border-radius: 5px; max-width: 800px; margin: auto; }
-        h2 { color: #333; }
-        p { margin-top: 10px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Completion Report</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
-<body>
-    <div class="container">
-        <h2>Task: {{ task.task.title }}</h2>
-        <p><strong>Completed By:</strong> {{ task.user.username }}</p>
-        <p><strong>Report:</strong></p>
-        <p>{{ task.report }}</p>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white font-sans">
+
+  <!-- Header -->
+  <div class="w-[90%] md:w-[70%] mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg mt-10">
+    <div class="bg-gray-800 text-white px-6 py-4 rounded-t-lg">
+      <h1 class="text-xl font-bold text-center">Task Completion Report</h1>
     </div>
+
+    <!-- Report Content -->
+    <div class="p-6 space-y-4">
+
+      <!-- Status -->
+      <div class="text-lg font-semibold">
+        Status:
+        {% if task.task.status == "completed" %}
+          <span class="text-green-600">{{ task.task.status|capfirst }}</span>
+        {% elif task.task.status == "inprogress" %}
+          <span class="text-blue-600">{{ task.task.status|capfirst }}</span>
+        {% elif task.task.status == "pending" %}
+          <span class="text-red-600">{{ task.task.status|capfirst }}</span>
+        {% else %}
+          <span class="text-gray-600">{{ task.task.status|capfirst }}</span>
+        {% endif %}
+      </div>
+
+      <!-- Details -->
+      <div>
+        <p class="text-xl font-bold mb-2">{{ task.task.title }}</p>
+        <p class="text-sm font-medium">Assigned To: <span class="font-semibold">{{ task.task.assigned_to }}</span></p>
+        <p class="text-sm font-medium">Admin: <span class="font-semibold">{{ task.task.admin }}</span></p>
+        <p class="text-sm font-medium">Created Date: <span class="font-semibold">{{ task.task.created_at }}</span></p>
+        <p class="text-sm font-medium">Due Date: <span class="font-semibold">{{ task.task.due_date }}</span></p>
+        <p class="text-sm font-medium">Completed At: <span class="font-semibold">{{ task.completion_date }}</span></p>
+        <p class="text-sm font-medium">Worked Hours: <span class="font-semibold">{{ task.worked_hours }}</span></p>
+      </div>
+
+      <!-- Report -->
+      <div>
+        <h3 class="text-lg font-semibold mb-1">Completion Report:</h3>
+        <p class="bg-gray-100 dark:bg-gray-700 p-4 rounded text-sm text-gray-700 dark:text-gray-200">
+          {{ task.completion_report }}
+        </p>
+      </div>
+
+      <!-- Task Description -->
+      <div>
+        <h3 class="text-lg font-semibold mb-1">Task Description:</h3>
+        <p class="bg-gray-50 dark:bg-gray-700 p-4 rounded text-sm text-gray-700 dark:text-gray-200">
+          {{ task.task.description }}
+        </p>
+      </div>
+
+    </div>
+  </div>
+
 </body>
 </html>

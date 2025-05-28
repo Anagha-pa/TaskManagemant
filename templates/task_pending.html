@@ -1,52 +1,88 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>All Tasks</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: #f8f9fa; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #007BFF; color: white; }
-        a, button { padding: 5px 10px; text-decoration: none; border: none; border-radius: 4px; }
-        .btn-edit { background: #28a745; color: white; }
-        .btn-delete { background: #dc3545; color: white; }
-        .btn-complete { background: #17a2b8; color: white; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending-tasks</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><body></body>
 </head>
-<body>
-    <h1>Pending / In Progress Tasks <h1/>
-    <table>
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Assigned To</th>
-                <th>Status</th>
-                <th>Due Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for task in tasks %}
-            <tr>
-                <td>{{ task.title }}</td>
-                <td>{{ task.assigned_to.username }}</td>
-                <td>{{ task.status }}</td>
-                <td>{{ task.due_date }}</td>
-                <td>
-                    {% if task.status != 'completed' %}
-                        <a class="btn-complete" href="{% url 'task-progress' task.id %}">Start</a>
-                        <a class="btn-complete" href="{% url 'task-complete' task.id %}">Complete</a>
-                    {% endif %}
-                    <a class="btn-edit" href="{% url 'task-update' task.id %}">Edit</a>
-                    <a class="btn-delete" href="{% url 'task-delete' task.id %}">Delete</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="5">No tasks available.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+<body class="dark:bg-gray-900">
+
+    <!-- Static Heading -->
+<div class="w-[70%] mx-auto bg-white rounded-lg shadow-md overflow-hidden mt-10">
+    <div class="bg-gray-800 text-white px-6 py-4">
+      <h5 class="text-lg font-semibold text-center">All Tasks</h5>
+    </div>
+  </div>
+  
+  <!-- Loop through users or tasks -->
+  {%if tasks%}
+  {% for task in tasks %}
+    <div class="w-[70%] mx-auto bg-white rounded-lg shadow-md overflow-hidden mt-6">
+      <div class="p-6">
+                {% if task.status == "completed" %}
+        <h5 class="text-lg mb-2 text-green-600"> {{ task.status }}</h5>
+        {% elif task.status == "in_progress" %}
+        <h5 class="text-lg mb-2 text-blue-600"> {{ task.status }}</h5>
+        {% elif task.status == "pending" %}
+        <h5 class="text-lg mb-2 text-red-600">{{ task.status }}</h5>
+        {% else %}
+        <h5 class="text-lg mb-2 text-gray-600">{{ task.status }}</h5>
+        {% endif %}
+        <h5 class="text-xl font-bold mb-2">{{ task.title }}</h5>
+        <h5 class="text-lg font-bold mb-2 uppercase">Assigned To : {{ task.assigned_to }}</h5>
+        <h5 class="text-sm font-bold mb-2">Admin : {{ task.admin }}</h5>
+        <h5 class="text-sm font-bold mb-2">created date : {{ task.created_at }}</h5>
+        <h5 class="text-sm font-bold mb-2">Due Date : {{ task.due_date }}</h5>
+        
+        <p class="text-gray-900 mb-4">
+          {{ task.description }}
+        </p>
+       
+        <div class="flex justify-start space-x-4">
+            {% if task.status == "completed" %}
+              <a href="{% url 'task-completed-report' task.pk %}" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded">
+                View report
+              </a>
+            {% elif task.status == "in_progress" or task.status == "pending" %}
+              {% if request.user.is_superuser or request.user.user_type == "admin" %}
+                <a href="{% url 'task-update' task.pk %}" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-4 py-2 rounded">
+                  Update task
+                </a>
+              {% endif %}
+            {% endif %}
+
+            {% if request.user.user_type == "user" and task.status == "pending" %}
+    <a href="{%url 'task-progress' task.pk%}" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-4 py-2 rounded">
+      Make as In Progress
+    </a>
+  {% endif %}
+  {% if request.user.user_type == "user" and task.status == "in_progress" %}
+  <a href="{% url 'task-complete-form' task.pk %}" class="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded">
+    Mark as Completed
+  </a>
+{% endif %}
+            
+            <!-- Always show delete button to admins and superusers -->
+            {% if request.user.is_superuser or request.user.user_type == "admin" %}
+              <a href="{% url 'task-delete' task.id %}" class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded">
+                Delete
+              </a>
+            {% endif %}
+          </div>
+          
+      </div>
+    </div>
+  {% endfor %}
+  {% else %}
+    <div class="w-[70%] mx-auto bg-white rounded-lg shadow-md overflow-hidden mt-6">
+      <div class="p-6">
+        <h5 class="text-lg mb-2 text-red-600"> No tasks available</h5>
+      {% endif %}
+  
+      
+    
 </body>
 </html>

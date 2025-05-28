@@ -18,10 +18,12 @@
         Welcome, {{ request.user.username }}
       </div>
       <nav class="space-x-6 hidden md:flex items-center">
-        <a href="{% url 'task-list' %}" class="hover:text-teal-600">Task List</a>
+        
         <a href="{% url 'task-add' %}" class="hover:text-teal-600">Create Task</a>
-        <a href="{% url 'user-list' %}" class="hover:text-teal-600">Employee List</a>
+        <a href="{% url 'task-list' %}" class="hover:text-teal-600">Task List</a>
         <a href="{% url 'deleted-task' %}" class="hover:text-teal-600">Deleted Task</a>
+        <a href="{% url 'user-list' %}" class="hover:text-teal-600">Employee List</a>
+        <a href="{% url 'task-completion-reports' %}" class="hover:text-teal-600">Completion Reports</a>
         <a href="{% url 'signup-page' %}" class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-500">Add Employee</a>
         <a href="{% url 'logout' %}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">Logout</a>
       </nav>

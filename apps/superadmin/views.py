@@ -189,7 +189,7 @@ class TaskCompletedListView(LoginRequiredMixin, ListView):
         return Task.objects.filter(status='completed')
     
 
-class TaskDeletedListView(AdminPermissionmixin,ListView):
+class TaskDeletedListView(AdminPermissionmixin,LoginRequiredMixin,ListView):
     model = DeletedTask
     template_name = 'task_deleted_list.html'
     context_object_name = 'deleted_tasks'
@@ -200,7 +200,7 @@ class TaskDeletedListView(AdminPermissionmixin,ListView):
     
 
 @method_decorator(never_cache, name='dispatch')
-class TaskUpdateView(AdminPermissionmixin, View):
+class TaskUpdateView(AdminPermissionmixin,LoginRequiredMixin, View):
     template_name = 'task_form.html'
 
     def get(self, request, pk, *args, **kwargs):
@@ -256,7 +256,7 @@ class TaskUpdateView(AdminPermissionmixin, View):
         return redirect(reverse_lazy('task-list'))
     
 
-class TaskDeleteView(AdminPermissionmixin,View):
+class TaskDeleteView(AdminPermissionmixin,LoginRequiredMixin,View):
    
     
     def get(self,request,*args,**kwargs):
@@ -305,7 +305,7 @@ class TaskCompletionFormView(LoginRequiredMixin, View):
         task = get_object_or_404(Task, id=task_id)
 
         data = {
-            'completion_report': request.POST.get('completion_report')
+            'completion_report': request.POST.get('completion_report', '').strip()
         }
 
         errors = validate_completion_report_data(data)
@@ -324,7 +324,7 @@ class TaskCompletionFormView(LoginRequiredMixin, View):
         return redirect('task-list')
 
 
-class TaskCompletionReportListView(LoginRequiredMixin,View):
+class TaskCompletionReportView(LoginRequiredMixin,View):
     
     template_name = 'task_completion_report.html'
     
@@ -332,4 +332,12 @@ class TaskCompletionReportListView(LoginRequiredMixin,View):
         id = kwargs.get('pk')
         task = get_object_or_404(TaskCompletionReport,id=id)
         return render(request, self.template_name, {'task': task})
-        
+    
+
+class TaskCompletionReportListView(LoginRequiredMixin, View):
+    template_name = 'task_completion_report.html'
+
+    def get(self, request, *args, **kwargs):
+        reports = TaskCompletionReport.objects.select_related('task', 'user').order_by('-completion_date')
+        return render(request, self.template_name, {'reports': reports})
+

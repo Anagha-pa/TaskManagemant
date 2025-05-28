@@ -56,8 +56,7 @@ def validate_task_data(data):
 
 def validate_completion_report_data(data):
     errors = []
-
-    if not data.get('report') or data['report'].strip() == '':
+    report = data.get('completion_report', '').strip()
+    if not report:
         errors.append("Completion report is required.")
-
     return errors

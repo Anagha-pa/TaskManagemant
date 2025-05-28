@@ -1,0 +1,156 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>User List - Admin Panel</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f9fafb;
+            margin: 20px auto;
+            max-width: 900px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px 20px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .btn-remove, .btn-delete {
+            border: none;
+            color: white;
+            padding: 8px 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-remove {
+            background-color: #e67e22;
+        }
+        .btn-remove:hover {
+            background-color: #d35400;
+        }
+        .btn-delete {
+            background-color: #e74c3c;
+        }
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+        .role-badge {
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: white;
+            font-size: 13px;
+        }
+        .superadmin {
+            background-color: #2980b9;
+        }
+        .admin {
+            background-color: #27ae60;
+        }
+        .user {
+            background-color: #7f8c8d;
+        }
+        .messages {
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        .messages .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .messages .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>User List</h1>
+
+    <!-- Messages -->
+    <div class="messages">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                    {% if user.is_superuser %}
+                        <span class="role-badge superadmin">SuperAdmin</span>
+                    {% elif user.is_staff %}
+                        <span class="role-badge admin">Admin</span>
+                    {% else %}
+                        <span class="role-badge user">User</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        {% if user.is_staff and not user.is_superuser %}
+                        <form method="POST" action="{% url 'remove-admin' user.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-remove" onclick="return confirm('Remove admin rights from {{ user.username }}?')">Remove Admin</button>
+                        </form>
+                        {% endif %}
+                        
+                        {% if user.user_type == 'user' %}
+                        <form method="POST" action="{% url 'delete-user' user.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-delete" onclick="return confirm('Delete user {{ user.username }} permanently?')">Delete</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" style="text-align:center;">No users found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

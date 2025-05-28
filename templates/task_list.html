@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Tasks</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f9fa; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #007BFF; color: white; }
+        a, button { padding: 5px 10px; text-decoration: none; border: none; border-radius: 4px; }
+        .btn-edit { background: #28a745; color: white; }
+        .btn-delete { background: #dc3545; color: white; }
+        .btn-complete { background: #17a2b8; color: white; }
+    </style>
+</head>
+<body>
+    <h1>All Tasks</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Assigned To</th>
+                <th>Status</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.title }}</td>
+                <td>{{ task.assigned_to.username }}</td>
+                <td>{{ task.status }}</td>
+                <td>{{ task.due_date }}</td>
+                <td>
+                    {% if task.status != 'completed' %}
+                        <a class="btn-complete" href="{% url 'task-progress' task.id %}">Start</a>
+                        <a class="btn-complete" href="{% url 'task-complete' task.id %}">Complete</a>
+                    {% endif %}
+                    <a class="btn-edit" href="{% url 'task-update' task.id %}">Edit</a>
+                    <a class="btn-delete" href="{% url 'task-delete' task.id %}">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">No tasks available.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

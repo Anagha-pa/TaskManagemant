@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+
+  <!-- Header -->
+  <header class="bg-white dark:bg-gray-800 shadow">
+    <div class="mx-auto max-w-screen-xl px-4 py-4 flex justify-between items-center">
+      <div class="text-xl font-bold text-teal-600">
+        Welcome, {{ request.user.username }}
+      </div>
+      <nav class="space-x-6 hidden md:flex items-center">
+        <a href="{% url 'task-list' %}" class="hover:text-teal-600">Task List</a>
+        <a href="{% url 'task-add' %}" class="hover:text-teal-600">Create Task</a>
+        <a href="{% url 'user-list' %}" class="hover:text-teal-600">Employee List</a>
+        <a href="{% url 'deleted-task' %}" class="hover:text-teal-600">Deleted Task</a>
+        <a href="{% url 'signup-page' %}" class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-500">Add Employee</a>
+        <a href="{% url 'logout' %}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Content Area -->
+  <main class="max-w-screen-xl mx-auto px-4 py-10">
+    <h2 class="text-2xl font-semibold mb-6">Dashboard Overview</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white dark:bg-gray-800 p-6 rounded shadow-md">
+        <h3 class="text-lg font-semibold mb-2">Total Tasks</h3>
+        <p class="text-3xl font-bold text-teal-600">120</p>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded shadow-md">
+        <h3 class="text-lg font-semibold mb-2">Completed Tasks</h3>
+        <p class="text-3xl font-bold text-green-500">75</p>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded shadow-md">
+        <h3 class="text-lg font-semibold mb-2">Pending Tasks</h3>
+        <p class="text-3xl font-bold text-yellow-500">45</p>
+      </div>
+    </div>
+
+    <div class="mt-10 bg-white dark:bg-gray-800 p-6 rounded shadow-md">
+      <h3 class="text-xl font-semibold mb-4">Recent Activities</h3>
+      <ul class="space-y-3">
+        <li class="flex items-center justify-between border-b pb-2">
+          <span>Task "UI Design" assigned to John</span>
+          <span class="text-sm text-gray-500">2 hours ago</span>
+        </li>
+        <li class="flex items-center justify-between border-b pb-2">
+          <span>New task "API Integration" created</span>
+          <span class="text-sm text-gray-500">1 day ago</span>
+        </li>
+        <li class="flex items-center justify-between">
+          <span>Employee "Alice" added</span>
+          <span class="text-sm text-gray-500">3 days ago</span>
+        </li>
+      </ul>
+    </div>
+  </main>
+
+  <footer class="bg-white dark:bg-gray-800 text-center py-4 text-gray-500 mt-10">
+    &copy; {{ year|default:"2025" }} Task Manager Admin Panel
+  </footer>
+
+</body>
+</html>

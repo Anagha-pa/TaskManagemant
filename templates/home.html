@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Task Manager - Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f4f7fa;
+      color: #333;
+    }
+
+    header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-weight: 500;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .hero {
+      padding: 4rem 2rem;
+      text-align: center;
+      background-color: #e8f5e9;
+    }
+
+    .hero h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      color: #2e7d32;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      color: #555;
+    }
+
+    .cta-buttons a {
+      display: inline-block;
+      margin: 0 1rem;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .cta-login {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .cta-signup {
+      background-color: white;
+      color: #4CAF50;
+      border: 2px solid #4CAF50;
+    }
+
+    .features {
+      padding: 3rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      background-color: #fff;
+    }
+
+    .feature-card {
+      background-color: #f0f0f0;
+      padding: 1.5rem;
+      border-radius: 10px;
+      width: 300px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .feature-card h3 {
+      color: #388e3c;
+      margin-bottom: 0.8rem;
+    }
+
+    .feature-card p {
+      font-size: 0.95rem;
+      color: #666;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      background-color: #2e7d32;
+      color: white;
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Task Manager</h1>
+    <nav>
+      <a href="{% url 'login' %}">Login</a>
+      <a href="{% url 'signup-page' %}">Sign Up</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h2>Welcome to Your Task Management Dashboard</h2>
+    <p>Organize your tasks, track progress, and collaborate with your team effortlessly.</p>
+    <div class="cta-buttons">
+      <a href="{% url 'login' %}" class="cta-login">Login</a>
+      <a href="{% url 'signup-page' %}" class="cta-signup">Get Started</a>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="feature-card">
+      <h3>Easy Task Assignments</h3>
+      <p>Assign and manage tasks across teams with just a few clicks.</p>
+    </div>
+    <div class="feature-card">
+      <h3>Track Progress</h3>
+      <p>Real-time status updates and completion reports keep you informed.</p>
+    </div>
+    <div class="feature-card">
+      <h3>Role-Based Access</h3>
+      <p>Separate dashboards and permissions for Users, Admins, and SuperAdmins.</p>
+    </div>
+  </section>
+
+  <footer>
+    &copy; {{ year|default:"2025" }} Task Manager. All rights reserved.
+  </footer>
+
+</body>
+</html>

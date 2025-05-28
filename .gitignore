@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+db.sqlite3
+db.sqlite3-journal
+
+# If using PostgreSQL or MySQL, remove the db.sqlite3 line above
+
+# Media and static files (optional - only ignore if generated during runtime)
+media/
+staticfiles/
+static/
+
+# Environments
+venv/
+.env
+*.env
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
+# Mac/Linux/Windows system files
+.DS_Store
+Thumbs.db
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Migrations (optional - ignore if you auto-generate them and want a clean repo)
+# ** Not recommended if working in teams **
+# */migrations/
+# !*/migrations/__init__.py

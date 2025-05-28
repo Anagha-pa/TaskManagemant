@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Task</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            padding: 50px;
+        }
+        .form-container {
+            background: #fff;
+            padding: 30px;
+            max-width: 600px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 20px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .errors {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Create New Task</h2>
+
+        {% if errors %}
+            <div class="errors">
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="title" placeholder="Task Title" value="{{ input.title }}">
+            <textarea name="description" placeholder="Task Description">{{ input.description }}</textarea>
+
+            <label for="admin">Assign Admin:</label>
+            <select name="admin">
+                <option value="">-- Select Admin --</option>
+                {% for admin in admins %}
+                    <option value="{{ admin.id }}" {% if input.admin == admin.id|stringformat:"s" %}selected{% endif %}>{{ admin.username }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="assigned_to">Assign To:</label>
+            <select name="assigned_to">
+                <option value="">-- Select User --</option>
+                {% for user in users %}
+                    <option value="{{ user.id }}" {% if input.assigned_to == user.id|stringformat:"s" %}selected{% endif %}>{{ user.username }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="date" name="due_date" value="{{ input.due_date }}">
+            <select name="status">
+                <option value="pending" {% if input.status == "pending" %}selected{% endif %}>Pending</option>
+                <option value="in_progress" {% if input.status == "in_progress" %}selected{% endif %}>In Progress</option>
+                <option value="completed" {% if input.status == "completed" %}selected{% endif %}>Completed</option>
+            </select>
+
+            <button type="submit">Create Task</button>
+        </form>
+    </div>
+</body>
+</html>
